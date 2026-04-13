@@ -40,6 +40,13 @@ img.onload = () => {
 };
 img.src = BG_SRC;
 
+fg.addEventListener('mousemove', (e) => {
+  const rect = fg.getBoundingClientRect();
+  const scale = fg.width / rect.width;
+  const x = (e.clientX - rect.left) * scale;
+  paddle.x = Math.max(0, Math.min(fg.width - paddle.w, x - paddle.w / 2));
+});
+
 function frame() {
   stepBall(ball, paddle, bricks, fg.width, fg.height);
   fgCtx.clearRect(0, 0, fg.width, fg.height);
