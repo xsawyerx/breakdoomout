@@ -95,10 +95,44 @@ export function drawBall(ctx, b) {
   ctx.fill();
 }
 
+// samples average RGB in the brick's region on the background canvas
+// and stores it on the brick. called every frame so bricks track the
+// live background.
+export function sampleBrickColors(bgCtx, bricks) {
+  for (const b of bricks) {
+    if (!b.alive) continue;
+    const data = bgCtx.getImageData(
+      Math.floor(b.x), Math.floor(b.y),
+      Math.max(1, Math.floor(b.w)), Math.max(1, Math.floor(b.h)),
+    ).data;
+    let r = 0, g = 0, bl = 0, n = 0;
+    // step a few pixels to keep this cheap
+    for (let i = 0; i < data.length; i += 16) {
+      r += data[i];
+      g += data[i + 1];
+      bl += data[i + 2];
+      n++;
+    }
+    b.color = [Math.round(r / n), Math.round(g / n), Math.round(bl / n)];
+  }
+}
+
 export function drawBricks(ctx, bricks) {
   for (const b of bricks) {
     if (!b.alive) continue;
-    ctx.fillStyle = '#888';
-    ctx.fillRect(b.x + BRICK_GAP, b.y + BRICK_GAP, b.w - BRICK_GAP * 2, b.h - BRICK_GAP * 2);
+    const [r, g, bl] = b.color || [136, 136, 136];
+    const x = b.x + BRICK_GAP;
+    const y = b.y + BRICK_GAP;
+    const w = b.w - BRICK_GAP * 2;
+    const h = b.h - BRICK_GAP * 2;
+    ctx.fillStyle = `rgb(${r},${g},${bl})`;
+    ctx.fillRect(x, y, w, h);
+    // bevel: light top-left, dark bottom-right
+    ctx.fillStyle = 'rgba(255,255,255,0.22)';
+    ctx.fillRect(x, y, w, 2);
+    ctx.fillRect(x, y, 2, h);
+    ctx.fillStyle = 'rgba(0,0,0,0.28)';
+    ctx.fillRect(x, y + h - 2, w, 2);
+    ctx.fillRect(x + w - 2, y, 2, h);
   }
 }
