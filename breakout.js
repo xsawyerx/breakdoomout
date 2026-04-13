@@ -98,22 +98,31 @@ export function drawBall(ctx, b) {
 // samples average RGB in the brick's region on the background canvas
 // and stores it on the brick. called every frame so bricks track the
 // live background.
-export function sampleBrickColors(bgCtx, bricks) {
+// grabs the full bg frame once and computes the average color of each
+// brick's region by indexing into it. much cheaper than calling
+// getImageData per brick.
+export function sampleBrickColors(bgCtx, bricks, w, h) {
+  const frame = bgCtx.getImageData(0, 0, w, h).data;
+  const stride = w * 4;
   for (const b of bricks) {
     if (!b.alive) continue;
-    const data = bgCtx.getImageData(
-      Math.floor(b.x), Math.floor(b.y),
-      Math.max(1, Math.floor(b.w)), Math.max(1, Math.floor(b.h)),
-    ).data;
+    const x0 = Math.floor(b.x);
+    const y0 = Math.floor(b.y);
+    const x1 = Math.min(w, Math.floor(b.x + b.w));
+    const y1 = Math.min(h, Math.floor(b.y + b.h));
     let r = 0, g = 0, bl = 0, n = 0;
-    // step a few pixels to keep this cheap
-    for (let i = 0; i < data.length; i += 16) {
-      r += data[i];
-      g += data[i + 1];
-      bl += data[i + 2];
-      n++;
+    // step 4 pixels in x, 4 in y
+    for (let y = y0; y < y1; y += 4) {
+      let i = y * stride + x0 * 4;
+      for (let x = x0; x < x1; x += 4) {
+        r += frame[i];
+        g += frame[i + 1];
+        bl += frame[i + 2];
+        n++;
+        i += 16;
+      }
     }
-    b.color = [Math.round(r / n), Math.round(g / n), Math.round(bl / n)];
+    if (n > 0) b.color = [Math.round(r / n), Math.round(g / n), Math.round(bl / n)];
   }
 }
 

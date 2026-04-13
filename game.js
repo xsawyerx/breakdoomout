@@ -49,7 +49,7 @@ fg.addEventListener('mousemove', (e) => {
 
 function frame() {
   stepBall(ball, paddle, bricks, fg.width, fg.height);
-  sampleBrickColors(bgCtx, bricks);
+  sampleBrickColors(bgCtx, bricks, bg.width, bg.height);
   fgCtx.clearRect(0, 0, fg.width, fg.height);
   drawBricks(fgCtx, bricks);
   drawPaddle(fgCtx, paddle);
