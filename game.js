@@ -5,11 +5,17 @@ const bgCtx = bg.getContext('2d');
 const fgCtx = fg.getContext('2d');
 const credit = document.getElementById('credit');
 
-import { makeBricks, drawBricks } from './breakout.js';
+import {
+  makeBricks, drawBricks,
+  makePaddle, drawPaddle,
+  makeBall, drawBall, stepBall,
+} from './breakout.js';
 
 const BG_SRC = '46848685344_76fa3aaf40_b.jpg';
 
 const { bricks } = makeBricks(fg.width);
+const paddle = makePaddle(fg.width, fg.height);
+const ball = makeBall(fg.width, fg.height);
 
 const img = new Image();
 img.onload = () => {
@@ -35,8 +41,11 @@ img.onload = () => {
 img.src = BG_SRC;
 
 function frame() {
+  stepBall(ball, paddle, bricks, fg.width, fg.height);
   fgCtx.clearRect(0, 0, fg.width, fg.height);
   drawBricks(fgCtx, bricks);
+  drawPaddle(fgCtx, paddle);
+  drawBall(fgCtx, ball);
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
