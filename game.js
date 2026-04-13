@@ -5,7 +5,11 @@ const bgCtx = bg.getContext('2d');
 const fgCtx = fg.getContext('2d');
 const credit = document.getElementById('credit');
 
+import { makeBricks, drawBricks } from './breakout.js';
+
 const BG_SRC = '46848685344_76fa3aaf40_b.jpg';
+
+const { bricks } = makeBricks(fg.width);
 
 const img = new Image();
 img.onload = () => {
@@ -29,6 +33,13 @@ img.onload = () => {
   bgCtx.drawImage(img, dx, dy, dw, dh);
 };
 img.src = BG_SRC;
+
+function frame() {
+  fgCtx.clearRect(0, 0, fg.width, fg.height);
+  drawBricks(fgCtx, bricks);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
 
 credit.textContent =
   'Background: "Bizzarie di Varie Figure" by Giovanni Battista Bracelli, 1624.';
