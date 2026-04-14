@@ -113,6 +113,10 @@ export function drawBall(ctx, b) {
 export function drawBricks(ctx, bricks, bgCanvas) {
   for (const b of bricks) {
     if (!b.alive) continue;
+    // mortar: dark fill covering the full brick cell, then the inner
+    // window is drawn on top. gives each brick a visible frame.
+    ctx.fillStyle = 'rgba(0,0,0,0.75)';
+    ctx.fillRect(b.x, b.y, b.w, b.h);
     const x = b.x + BRICK_GAP;
     const y = b.y + BRICK_GAP;
     const w = b.w - BRICK_GAP * 2;
