@@ -118,12 +118,14 @@ export function drawBricks(ctx, bricks, bgCanvas) {
     const w = b.w - BRICK_GAP * 2;
     const h = b.h - BRICK_GAP * 2;
     ctx.drawImage(bgCanvas, x, y, w, h, x, y, w, h);
-    // bevel: light top-left, dark bottom-right
-    ctx.fillStyle = 'rgba(255,255,255,0.22)';
-    ctx.fillRect(x, y, w, 2);
-    ctx.fillRect(x, y, 2, h);
-    ctx.fillStyle = 'rgba(0,0,0,0.28)';
-    ctx.fillRect(x, y + h - 2, w, 2);
-    ctx.fillRect(x + w - 2, y, 2, h);
+    // bevel: light top-left, dark bottom-right. thicker than a pixel
+    // outline so the grid still reads as discrete bricks even when the
+    // bg content varies a lot within a single cell.
+    ctx.fillStyle = 'rgba(255,255,255,0.45)';
+    ctx.fillRect(x, y, w, 3);
+    ctx.fillRect(x, y, 3, h);
+    ctx.fillStyle = 'rgba(0,0,0,0.5)';
+    ctx.fillRect(x, y + h - 3, w, 3);
+    ctx.fillRect(x + w - 3, y, 3, h);
   }
 }
