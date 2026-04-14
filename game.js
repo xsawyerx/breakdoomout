@@ -6,7 +6,7 @@ const fgCtx = fg.getContext('2d');
 const credit = document.getElementById('credit');
 
 import {
-  makeBricks, drawBricks, sampleBrickColors,
+  makeBricks, drawBricks,
   makePaddle, drawPaddle,
   makeBall, drawBall, stepBall,
 } from './breakout.js';
@@ -49,9 +49,8 @@ fg.addEventListener('mousemove', (e) => {
 
 function frame() {
   stepBall(ball, paddle, bricks, fg.width, fg.height);
-  sampleBrickColors(bgCtx, bricks, bg.width, bg.height);
   fgCtx.clearRect(0, 0, fg.width, fg.height);
-  drawBricks(fgCtx, bricks);
+  drawBricks(fgCtx, bricks, bg);
   drawPaddle(fgCtx, paddle);
   drawBall(fgCtx, ball);
   requestAnimationFrame(frame);

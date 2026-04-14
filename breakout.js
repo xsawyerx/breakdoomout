@@ -106,47 +106,18 @@ export function drawBall(ctx, b) {
   ctx.fill();
 }
 
-// samples average RGB in the brick's region on the background canvas
-// and stores it on the brick. called every frame so bricks track the
-// live background.
-// grabs the full bg frame once and computes the average color of each
-// brick's region by indexing into it. much cheaper than calling
-// getImageData per brick.
-export function sampleBrickColors(bgCtx, bricks, w, h) {
-  const frame = bgCtx.getImageData(0, 0, w, h).data;
-  const stride = w * 4;
+// draws each live brick as a window onto the corresponding region of
+// the bg canvas, so the brick actually shows what is behind it. the
+// bevel and gap between bricks are what make the grid still read as
+// bricks rather than a plain copy of the bg.
+export function drawBricks(ctx, bricks, bgCanvas) {
   for (const b of bricks) {
     if (!b.alive) continue;
-    const x0 = Math.floor(b.x);
-    const y0 = Math.floor(b.y);
-    const x1 = Math.min(w, Math.floor(b.x + b.w));
-    const y1 = Math.min(h, Math.floor(b.y + b.h));
-    let r = 0, g = 0, bl = 0, n = 0;
-    // step 4 pixels in x, 4 in y
-    for (let y = y0; y < y1; y += 4) {
-      let i = y * stride + x0 * 4;
-      for (let x = x0; x < x1; x += 4) {
-        r += frame[i];
-        g += frame[i + 1];
-        bl += frame[i + 2];
-        n++;
-        i += 16;
-      }
-    }
-    if (n > 0) b.color = [Math.round(r / n), Math.round(g / n), Math.round(bl / n)];
-  }
-}
-
-export function drawBricks(ctx, bricks) {
-  for (const b of bricks) {
-    if (!b.alive) continue;
-    const [r, g, bl] = b.color || [136, 136, 136];
     const x = b.x + BRICK_GAP;
     const y = b.y + BRICK_GAP;
     const w = b.w - BRICK_GAP * 2;
     const h = b.h - BRICK_GAP * 2;
-    ctx.fillStyle = `rgb(${r},${g},${bl})`;
-    ctx.fillRect(x, y, w, h);
+    ctx.drawImage(bgCanvas, x, y, w, h, x, y, w, h);
     // bevel: light top-left, dark bottom-right
     ctx.fillStyle = 'rgba(255,255,255,0.22)';
     ctx.fillRect(x, y, w, 2);
