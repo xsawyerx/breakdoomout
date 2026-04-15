@@ -110,10 +110,11 @@ export function generateLevel() {
   const nStamps = Math.random() < 0.35 ? 2 : 1;
   for (let i = 0; i < nStamps; i++) pick(STAMPS)(grid);
   if (Math.random() < 0.5) pick(MODIFIERS)(grid);
-  mirrorH(grid);
-  // guard against trivially empty levels
+  // guard against trivially empty levels before mirroring so the
+  // fallback stamp also gets mirrored and stays symmetric.
   let count = 0;
   for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) count += grid[r][c];
   if (count < 12) pick(STAMPS)(grid);
+  mirrorH(grid);
   return grid;
 }
