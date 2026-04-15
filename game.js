@@ -10,12 +10,21 @@ import {
   makePaddle, drawPaddle,
   makeBall, drawBall, stepBall,
 } from './breakout.js';
+import { generateLevel } from './levels.js';
 
 const BG_SRC = '46848685344_76fa3aaf40_b.jpg';
 
-const { bricks } = makeBricks(fg.width);
+let bricks = makeBricks(fg.width, generateLevel()).bricks;
 const paddle = makePaddle(fg.width, fg.height);
 const ball = makeBall(fg.width, fg.height);
+
+function nextLevel() {
+  bricks = makeBricks(fg.width, generateLevel()).bricks;
+  ball.x = fg.width / 2;
+  ball.y = fg.height - 80;
+  ball.vx = 3;
+  ball.vy = -3;
+}
 
 const img = new Image();
 img.onload = () => {
@@ -49,6 +58,7 @@ fg.addEventListener('mousemove', (e) => {
 
 function frame() {
   stepBall(ball, paddle, bricks, fg.width, fg.height);
+  if (bricks.every((b) => !b.alive)) nextLevel();
   fgCtx.clearRect(0, 0, fg.width, fg.height);
   drawBricks(fgCtx, bricks, bg);
   drawPaddle(fgCtx, paddle);

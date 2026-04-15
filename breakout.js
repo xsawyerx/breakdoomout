@@ -5,12 +5,13 @@ export const ROWS = 10;
 export const BRICK_GAP = 2;
 export const BRICK_TOP = 40;
 
-export function makeBricks(canvasW) {
+export function makeBricks(canvasW, layout) {
   const bw = canvasW / COLS;
   const bh = 28;
   const bricks = [];
   for (let r = 0; r < ROWS; r++) {
     for (let c = 0; c < COLS; c++) {
+      if (layout && !layout[r][c]) continue;
       bricks.push({
         c, r,
         x: c * bw,
