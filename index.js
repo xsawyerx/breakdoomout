@@ -28,10 +28,40 @@ function spawnDoom() {
 wss.on('connection', (ws) => {
   console.log('[doom] client connected, spawning doom');
   const proc = spawnDoom();
+  const frameStream = proc.stdio[3];
+
+  // accumulate partial reads until a full FRAME_SIZE chunk is available.
+  let buf = Buffer.alloc(FRAME_SIZE * 2);
+  let bufLen = 0;
+  const pending = [];
+
+  frameStream.on('data', (chunk) => {
+    if (bufLen + chunk.length > buf.length) {
+      const nb = Buffer.alloc(buf.length + chunk.length + FRAME_SIZE);
+      buf.copy(nb, 0, 0, bufLen);
+      buf = nb;
+    }
+    chunk.copy(buf, bufLen);
+    bufLen += chunk.length;
+    while (bufLen >= FRAME_SIZE && pending.length) {
+      const frame = Buffer.from(buf.subarray(0, FRAME_SIZE));
+      buf.copyWithin(0, FRAME_SIZE, bufLen);
+      bufLen -= FRAME_SIZE;
+      pending.shift().resolve(frame);
+    }
+  });
+
+  function requestFrame() {
+    return new Promise((resolve, reject) => {
+      pending.push({ resolve, reject });
+      try { proc.stdin.write('F\n'); } catch (e) { reject(e); }
+    });
+  }
 
   proc.stderr.on('data', (d) => console.log('[doom:err]', d.toString().trimEnd()));
   proc.on('exit', (code) => {
     console.log('[doom] exited', code);
+    for (const p of pending) p.reject(new Error('doom exited'));
     try { ws.close(); } catch {}
   });
 
@@ -40,6 +70,9 @@ wss.on('connection', (ws) => {
     try { proc.stdin.write('Q\n'); } catch {}
     try { proc.kill('SIGTERM'); } catch {}
   });
+
+  // expose for the tic loop (next commit)
+  ws.doom = { proc, requestFrame };
 });
 
 server.listen(PORT, () => {
