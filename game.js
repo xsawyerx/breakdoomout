@@ -11,8 +11,7 @@ import {
   makeBall, drawBall, stepBall,
 } from './breakout.js';
 import { generateLevel } from './levels.js';
-
-const BG_SRC = '46848685344_76fa3aaf40_b.jpg';
+import { connectDoom } from './doom-bridge.js';
 
 let bricks = makeBricks(fg.width, generateLevel()).bricks;
 const paddle = makePaddle(fg.width, fg.height);
@@ -26,28 +25,7 @@ function nextLevel() {
   ball.vy = -3;
 }
 
-const img = new Image();
-img.onload = () => {
-  // cover-fit the image into the canvas
-  const ar = img.width / img.height;
-  const car = bg.width / bg.height;
-  let dw, dh, dx, dy;
-  if (ar > car) {
-    dh = bg.height;
-    dw = dh * ar;
-    dx = (bg.width - dw) / 2;
-    dy = 0;
-  } else {
-    dw = bg.width;
-    dh = dw / ar;
-    dx = 0;
-    dy = (bg.height - dh) / 2;
-  }
-  bgCtx.fillStyle = '#000';
-  bgCtx.fillRect(0, 0, bg.width, bg.height);
-  bgCtx.drawImage(img, dx, dy, dw, dh);
-};
-img.src = BG_SRC;
+connectDoom(bgCtx);
 
 fg.addEventListener('mousemove', (e) => {
   const rect = fg.getBoundingClientRect();
@@ -67,5 +45,4 @@ function frame() {
 }
 requestAnimationFrame(frame);
 
-credit.textContent =
-  'Background: "Bizzarie di Varie Figure" by Giovanni Battista Bracelli, 1624.';
+credit.textContent = '';
