@@ -71,8 +71,25 @@ wss.on('connection', (ws) => {
     try { proc.kill('SIGTERM'); } catch {}
   });
 
-  // expose for the tic loop (next commit)
-  ws.doom = { proc, requestFrame };
+  const FPS = 30;
+  const FRAME_MS = Math.round(1000 / FPS);
+  let alive = true;
+  ws.on('close', () => { alive = false; });
+
+  (async () => {
+    while (alive) {
+      try {
+        proc.stdin.write('T 1\n');
+        const fb = await requestFrame();
+        if (!alive) break;
+        ws.send(fb, { binary: true });
+      } catch (e) {
+        console.log('[doom] loop error:', e.message);
+        break;
+      }
+      await new Promise((r) => setTimeout(r, FRAME_MS));
+    }
+  })();
 });
 
 server.listen(PORT, () => {
