@@ -6,11 +6,22 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<canvas id="doom-canvas" width="640" height="400" style="display:none"></canvas>
 <div id="stage">
   <canvas id="bg" width="640" height="400"></canvas>
   <canvas id="fg" width="640" height="400"></canvas>
 </div>
 <footer id="credit"></footer>
+<script>
+var Module = {
+  canvas: document.getElementById('doom-canvas'),
+  noInitialRun: false,
+  locateFile: function(path) {
+    return 'doomgeneric/doomgeneric/' + path;
+  },
+};
+</script>
+<script src="doomgeneric/doomgeneric/doomgeneric.js"></script>
 <script src="game.js" type="module"></script>
 </body>
 </html>
