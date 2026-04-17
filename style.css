@@ -4,7 +4,8 @@ html, body {
   background: #111;
   color: #ccc;
   font-family: system-ui, sans-serif;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
 body {
@@ -19,8 +20,11 @@ body {
 
 #stage {
   position: relative;
-  width: 1280px;
-  height: 800px;
+  aspect-ratio: 8 / 5;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 32px);
+  width: auto;
+  height: calc(100vh - 32px);
 }
 
 #stage canvas {
