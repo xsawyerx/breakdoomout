@@ -11,18 +11,16 @@ export function copyDoomFrame(bgCtx) {
   bgCtx.drawImage(doomCanvas, 0, 0);
 }
 
-export function setupKeyForwarding(fgCanvas) {
+const GAME_KEYS = new Set([
+  'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
+  'w', 'a', 's', 'd', 'f', 'e',
+  ' ', 'Enter', 'Escape', 'Tab', 'Shift',
+]);
+
+export function setupKeyForwarding() {
   for (const type of ['keydown', 'keyup']) {
     document.addEventListener(type, (e) => {
-      const clone = new KeyboardEvent(type, {
-        key: e.key,
-        code: e.code,
-        keyCode: e.keyCode,
-        which: e.which,
-        bubbles: true,
-        cancelable: true,
-      });
-      doomCanvas.dispatchEvent(clone);
+      if (GAME_KEYS.has(e.key)) e.preventDefault();
     });
   }
 }

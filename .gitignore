@@ -1,2 +1,7 @@
 *.sw?
 node_modules/
+doomgeneric/doomgeneric/build/
+doomgeneric/doomgeneric/doomgeneric.html
+doomgeneric/doomgeneric/doomgeneric.js
+doomgeneric/doomgeneric/doomgeneric.wasm
+doomgeneric/doomgeneric/doomgeneric.data

@@ -25,7 +25,7 @@ function nextLevel() {
   ball.vy = -3;
 }
 
-setupKeyForwarding(fg);
+setupKeyForwarding();
 
 fg.addEventListener('mousemove', (e) => {
   const rect = fg.getBoundingClientRect();
