@@ -11,7 +11,7 @@ import {
   makeBall, drawBall, stepBall,
 } from './breakout.js';
 import { generateLevel } from './levels.js';
-import { copyDoomFrame } from './doom-bridge.js';
+import { copyDoomFrame, setupKeyForwarding } from './doom-bridge.js';
 
 let bricks = makeBricks(fg.width, generateLevel()).bricks;
 const paddle = makePaddle(fg.width, fg.height);
@@ -24,6 +24,8 @@ function nextLevel() {
   ball.vx = 3;
   ball.vy = -3;
 }
+
+setupKeyForwarding(fg);
 
 fg.addEventListener('mousemove', (e) => {
   const rect = fg.getBoundingClientRect();
