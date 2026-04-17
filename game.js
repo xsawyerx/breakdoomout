@@ -11,7 +11,7 @@ import {
   makeBall, drawBall, stepBall,
 } from './breakout.js';
 import { generateLevel } from './levels.js';
-import { connectDoom } from './doom-bridge.js';
+import { copyDoomFrame } from './doom-bridge.js';
 
 let bricks = makeBricks(fg.width, generateLevel()).bricks;
 const paddle = makePaddle(fg.width, fg.height);
@@ -25,8 +25,6 @@ function nextLevel() {
   ball.vy = -3;
 }
 
-connectDoom(bgCtx);
-
 fg.addEventListener('mousemove', (e) => {
   const rect = fg.getBoundingClientRect();
   const scale = fg.width / rect.width;
@@ -35,6 +33,7 @@ fg.addEventListener('mousemove', (e) => {
 });
 
 function frame() {
+  copyDoomFrame(bgCtx);
   stepBall(ball, paddle, bricks, fg.width, fg.height);
   if (bricks.every((b) => !b.alive)) nextLevel();
   fgCtx.clearRect(0, 0, fg.width, fg.height);
