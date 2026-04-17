@@ -1,9 +1,8 @@
-// emscripten doom bridge. renders to a hidden canvas
-// (id="doom-canvas"). module exposes a function to copy
-// that hidden canvas onto the visible bg canvas each frame.
-//
-// keyboard events are forwarded from the visible fg canvas to the
-// hidden doom canvas so SDL picks them up.
+// emscripten doom bridge. emscripten module renders to a hidden
+// canvas (id="doom-canvas"). this module copies that canvas onto the
+// visible bg canvas each frame. keyboard: emscripten SDL listens on
+// document by default, so keys reach doom without explicit forwarding.
+// preventDefault on game keys stops the page from scrolling.
 
 const doomCanvas = document.getElementById('doom-canvas');
 
