@@ -8,7 +8,6 @@ Mouse for paddle, keyboard for DOOM.
 
 Need [emsdk](https://emscripten.org/docs/getting_started/downloads.html) to compile doomgeneric to WASM, which is pretty damn cool.
 
-
 In `emsdk/`:
 
 ```
