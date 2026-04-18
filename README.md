@@ -4,6 +4,8 @@ Breakout, bricks are DOOM and behind them, DOOM.
 
 Mouse for paddle, keyboard for DOOM.
 
+![BreakDOOMout](images/breakdoomout.gif)
+
 ## Setup
 
 Need [emsdk](https://emscripten.org/docs/getting_started/downloads.html) to compile doomgeneric to WASM, which is pretty damn cool.
