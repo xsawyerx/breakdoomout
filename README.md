@@ -6,6 +6,10 @@ Mouse for paddle, keyboard for DOOM.
 
 ![BreakDOOMout](images/breakdoomout.gif)
 
+## How
+
+DOOM running natively on the brower in WASM. Breakout written in client-side JS.
+
 ## Setup
 
 Need [emsdk](https://emscripten.org/docs/getting_started/downloads.html) to compile doomgeneric to WASM, which is pretty damn cool.
